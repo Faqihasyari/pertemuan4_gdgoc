@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1036357616131",
+    "project_id": "barang-f2c85",
+    "storage_bucket": "barang-f2c85.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036357616131:android:be7ebdc91d72e933ec4436",
+        "android_client_info": {
+          "package_name": "com.example.intensive_study_jam1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeNMHFsI7dF-vhjk0hps68ffzwYxHbzcE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intensive_study_jam1/barang.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class CustomForm extends StatefulWidget {
-  final int id;
+  final Map<String, dynamic>? data;
+
   final Function(Map<String, Object?>) onUpdate;
-  CustomForm({Key? key, required this.id, required this.onUpdate})
+  CustomForm({Key? key, required this.onUpdate, this.data})
       : super(key: key);
 
   @override
@@ -21,44 +23,54 @@ class _CustomFormState extends State<CustomForm> {
   void initState() {
     super.initState();
 
-    var mhs = Barang().fintById(widget.id);
-
-    kode.text = mhs['kode'].toString();
-    nama.text = mhs['barang'].toString();
-    harga.text = mhs['Harga'].toString();
   }
 
   void _showPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Data Disimpan"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Kode: ${kode.text}"),
-              Text("Nama: ${nama.text}"),
-              Text("Harga: ${harga.text}"),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                widget.onUpdate({
-                  'barang_id': widget.id,
-                  'barang': nama.text,
-                });
-              },
-              child: Text("OK"),
-            ),
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Data Disimpan"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Kode: ${kode.text}"),
+            Text("Nama: ${nama.text}"),
+            Text("Harga: ${harga.text}"),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+
+              // Simpan ke Firestore
+              await FirebaseFirestore.instance.collection('barang').add({
+                "kode": kode.text,
+                "nama": nama.text,
+                "harga": int.tryParse(harga.text) ?? 0, // Pastikan harga dalam bentuk angka
+              });
+
+              // Perbarui state lokal
+              widget.onUpdate({
+                "kode": kode.text,
+                "nama": nama.text,
+                "harga": harga.text,
+              });
+
+              // Kosongkan field setelah menyimpan
+              kode.clear();
+              nama.clear();
+              harga.clear();
+            },
+            child: Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
